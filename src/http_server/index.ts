@@ -2,7 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as http from 'http';
 import { WebSocketServer } from 'ws';
-import { mouse } from "@nut-tree/nut-js";
+
+import { handler } from './handler';
 
 export const httpServer = http.createServer(function (req: http.IncomingMessage, res: http.ServerResponse) {
     const __dirname = path.resolve(path.dirname(''));
@@ -20,7 +21,8 @@ export const httpServer = http.createServer(function (req: http.IncomingMessage,
 
 const wss = new WebSocketServer({ server: httpServer });
 wss.on('connection', (ws) => {
-    ws.on('message', (data) => {
-      console.log('received: %s', data);
+    ws.on('message', async (data) => {
+        const result = await handler(data.toString());
+        if (result) ws.send(result);
     });
 });
