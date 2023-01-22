@@ -1,7 +1,7 @@
 import { IActionMap, ICommand } from './types';
 
 
-import { moveMouse, drawRectangle } from './actions';
+import { moveMouse, drawRectangle, drawСircle } from './actions';
 
 export const actionMap:  IActionMap = {
   "mouse_left": (command: ICommand): Promise<string | undefined> => moveMouse(command),
@@ -10,5 +10,6 @@ export const actionMap:  IActionMap = {
   "mouse_down": (command: ICommand): Promise<string | undefined> => moveMouse(command),
   "mouse_position": (command: ICommand): Promise<string | undefined> => moveMouse(command),
   "draw_square": (command: ICommand): Promise<string | undefined> => drawRectangle(command),
-  "draw_rectangle": (command: ICommand): Promise<string | undefined> => drawRectangle(command)
+  "draw_rectangle": (command: ICommand): Promise<string | undefined> => drawRectangle(command),
+  "draw_circle": (command: ICommand): Promise<string | undefined> => drawСircle(command),
 }
