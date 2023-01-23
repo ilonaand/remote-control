@@ -1,5 +1,8 @@
-import { down, left, mouse, Point, right, straightTo, up } from "@nut-tree/nut-js";
+import { down, left, mouse, Point, right, Region, up, screen, FileType } from "@nut-tree/nut-js";
 import { ICommand, MoveDirections } from "./types";
+import { readfile, checkFileExists } from './utils';
+
+import path from 'path';
 
 export const moveMouse = async (command: ICommand): Promise<string | undefined> => {
   const direction = command.action.split('_')[1];
@@ -91,3 +94,41 @@ export const drawСircle = async (command: ICommand): Promise<string | undefined
 
   return command.action;
 }
+
+export const prntScrn = async (command: ICommand): Promise<string | undefined> => {
+  const center: Point = await mouse.getPosition();
+  const offset = 200;
+  if ((center.x - 99 < 0) || (center.y - 99 < 0)) {
+    console.error('Out of screen');
+    return undefined;
+  }
+  const left = center.x - 99;
+  const top = center.y - 99; 
+  
+  try {
+    const region: Region = new Region(left, top, offset, offset);
+
+    const baseName = 'screen';
+    const filePath =  path.resolve(process.cwd(), 'screens');
+    await screen.captureRegion(baseName, region, FileType.PNG, filePath);
+    const fileName = path.resolve(filePath, `${baseName}${FileType.PNG}` )
+    try {
+      const check = await checkFileExists(fileName);
+      if (!check) {
+        console.error("File can't read");
+        return undefined;
+      }
+      const buffer = await readfile(fileName, "base64");
+      return `${command.action} ${buffer}`;
+     
+    } catch (err) {
+      console.error(err);
+      return undefined;
+    }
+   
+  } catch (err) {
+    console.error(err);
+    return undefined;
+  }
+}
+  
