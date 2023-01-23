@@ -98,7 +98,13 @@ export const drawСircle = async (command: ICommand): Promise<string | undefined
 export const prntScrn = async (command: ICommand): Promise<string | undefined> => {
   const center: Point = await mouse.getPosition();
   const offset = 200;
-  if ((center.x - 99 < 0) || (center.y - 99 < 0)) {
+
+  const availScreenWidth  = await screen.height();
+  const availScreenHeight = await screen.width();
+
+  
+  if ((center.x - 99 < 0) || (center.y - 99 < 0) || 
+  (center.x + 100 > availScreenWidth ) || (center.y + 100 > availScreenHeight)) {
     console.error('Out of screen');
     return undefined;
   }
